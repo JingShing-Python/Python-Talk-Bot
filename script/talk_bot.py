@@ -17,6 +17,7 @@ class Talk_Bot:
         self.mode = mode
         # recognizer init    
         self.recognizer = speech_recognition.Recognizer()
+        self.master = None
 
     def line_speaker(self, texts,lang='zh-tw'):
         with tempfile.NamedTemporaryFile(delete=True) as fp:
@@ -47,9 +48,17 @@ class Talk_Bot:
         self.line_speaker('您好，很高興為您服務，請問要做些甚麼？')
         while(1):
             order_line = self.listener()
+
             # 問好
             if '你好' in order_line:
                 self.line_speaker('你好。')
+                if self.master!=None:
+                    self.line_speaker('我的'+self.master)
+            
+            # 我的名字是
+            elif '我的名字是' in order_line or '我是' in order_line:
+                self.master=order_line.split('是')[-1]
+                self.line_speaker('你就是我的Master嗎？'+self.master)
 
             # 有什麼吃的？
             elif '吃的' in order_line:
